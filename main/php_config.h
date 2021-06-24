@@ -437,7 +437,11 @@
 #define HAVE_CHROOT 1
 
 /* Define to 1 if you have the `clearenv' function. */
+#ifdef __KOS__
 /* #undef HAVE_CLEARENV */
+#else
+#define HAVE_CLEARENV 1
+#endif
 
 /* */
 /* #undef HAVE_CLI0CLI_H */
@@ -580,7 +584,11 @@
 /* #undef HAVE_EXIF */
 
 /* Define to 1 if you have the `explicit_bzero' function. */
+#ifdef __KOS__
 /* #undef HAVE_EXPLICIT_BZERO */
+#else
+#define HAVE_EXPLICIT_BZERO 1
+#endif
 
 /* Define to 1 if you have the `explicit_memset' function. */
 #define HAVE_EXPLICIT_MEMSET 1
@@ -631,7 +639,7 @@
 /* #undef HAVE_FOPENCOOKIE */
 
 /* Define to 1 if you have the `fork' function. */
-#define HAVE_FORK 1
+/* #undef HAVE_FORK */
 
 /* POSIX Access Control List */
 /* #undef HAVE_FPM_ACL */
@@ -667,7 +675,11 @@
 /* #undef HAVE_FUNC_GETHOSTBYNAME_R_6 */
 
 /* Define to 1 if you have the `funopen' function. */
+#ifdef __KOS__
 #define HAVE_FUNOPEN 1
+#else
+/* #undef HAVE_FUNOPEN */
+#endif
 
 /* Define to 1 if you have the `gai_strerror' function. */
 #define HAVE_GAI_STRERROR 1
@@ -1397,7 +1409,11 @@
 #define HAVE_SOCKADDR_STORAGE 1
 
 /* Define if sockaddr_un in sys/un.h contains a sun_len component */
+#ifdef __KOS__
 #define HAVE_SOCKADDR_UN_SUN_LEN 1
+#else
+/* #undef HAVE_SOCKADDR_UN_SUN_LEN */
+#endif
 
 /* */
 #define HAVE_SOCKET 1
@@ -1484,10 +1500,18 @@
 #define HAVE_STRING_H 1
 
 /* Define to 1 if you have the `strlcat' function. */
+#ifdef __KOS__
 #define HAVE_STRLCAT 1
+#else
+/* #undef HAVE_STRLCAT */
+#endif
 
 /* Define to 1 if you have the `strlcpy' function. */
+#ifdef __KOS__
 #define HAVE_STRLCPY 1
+#else
+/* #undef HAVE_STRLCPY */
+#endif
 
 /* Define to 1 if you have the `strndup' function. */
 #define HAVE_STRNDUP 1
@@ -1665,7 +1689,11 @@
 #define HAVE_TIMELIB_CONFIG_H 1
 
 /* do we have times? */
+#ifdef __KOS__
 /* #undef HAVE_TIMES */
+#else
+#define HAVE_TIMES 1
+#endif
 
 /* Define to 1 if you have the <tmmintrin.h> header file. */
 #define HAVE_TMMINTRIN_H 1
@@ -1871,7 +1899,7 @@
 #define PHP_BUILD_SYSTEM "Linux desktop 5.8.0-59-generic #66~20.04.1-Ubuntu SMP Thu Jun 17 11:14:10 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux"
 
 /* Define if your system has fork/vfork/CreateProcess */
-#define PHP_CAN_SUPPORT_PROC_OPEN 1
+/* #undef PHP_CAN_SUPPORT_PROC_OPEN */
 
 /* fpm group name */
 /* #undef PHP_FPM_GROUP */
@@ -1949,7 +1977,11 @@
 /* #undef PHP_ONIG_BAD_KOI8_ENTRY */
 
 /* uname output */
+#ifdef __KOS__
+#define PHP_OS "KOS"
+#else
 #define PHP_OS "Linux"
+#endif
 
 /* */
 /* #undef PHP_PDO_OCI_CLIENT_VERSION */
