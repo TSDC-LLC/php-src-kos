@@ -81,6 +81,7 @@ int __riscosify_control = __RISCOSIFY_STRICT_UNIX_SPECS;
 #include "fastcgi.h"
 
 #include <php_config.h>
+#include <strings.h>
 #include "fpm.h"
 #include "fpm_main_arginfo.h"
 #include "fpm_request.h"
@@ -1797,6 +1798,11 @@ consult the installation file that came with this distribution, or visit \n\
 #if ZEND_RC_DEBUG
 	old_rc_debug = zend_rc_debug;
 	zend_rc_debug = 0;
+#endif
+
+#ifdef __KOS__
+    fpm_config = "/usr/local/var/conf/fpm/php-fpm.conf";
+    force_daemon = 0;
 #endif
 
 	ret = fpm_init(argc, argv, fpm_config ? fpm_config : CGIG(fpm_config), fpm_prefix, fpm_pid, test_conf, php_allow_to_run_as_root, force_daemon, force_stderr);

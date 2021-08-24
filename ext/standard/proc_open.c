@@ -395,10 +395,12 @@ PHP_FUNCTION(proc_get_status)
 			signaled = 1;
 			termsig = WTERMSIG(wstatus);
 		}
+#ifndef __KOS__
 		if (WIFSTOPPED(wstatus)) {
 			stopped = 1;
 			stopsig = WSTOPSIG(wstatus);
 		}
+#endif
 	} else if (wait_pid == -1) {
 		/* The only error which could occur here is ECHILD, which means that the PID we were
 		 * looking for either does not exist or is not a child of this process */

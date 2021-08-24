@@ -28,12 +28,17 @@
 /* Under BSD, emulate fopencookie using funopen */
 #if defined(HAVE_FUNOPEN) && !defined(HAVE_FOPENCOOKIE)
 
-/* NetBSD 6.0+ uses off_t instead of fpos_t in funopen */
-# if defined(__NetBSD__) && (__NetBSD_Version__ >= 600000000)
+# ifdef __KOS__
 #  define PHP_FPOS_T off_t
 # else
-#  define PHP_FPOS_T fpos_t
+   /* NetBSD 6.0+ uses off_t instead of fpos_t in funopen */
+#  if defined(__NetBSD__) && (__NetBSD_Version__ >= 600000000)
+#   define PHP_FPOS_T off_t
+#  else
+#   define PHP_FPOS_T fpos_t
+#  endif
 # endif
+
 
 typedef struct {
 	int (*reader)(void *, char *, int);

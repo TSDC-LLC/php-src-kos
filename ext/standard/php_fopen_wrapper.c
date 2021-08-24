@@ -173,6 +173,13 @@ static void php_stream_apply_filter_list(php_stream *stream, char *filterlist, i
 }
 /* }}} */
 
+#ifdef __KOS__
+static int getdtablesize()
+{
+    return 0;
+}
+#endif
+
 php_stream * php_stream_url_wrap_php(php_stream_wrapper *wrapper, const char *path, const char *mode, int options,
 									 zend_string **opened_path, php_stream_context *context STREAMS_DC) /* {{{ */
 {

@@ -229,7 +229,9 @@ void fpm_children_bury() /* {{{ */
 			if (WTERMSIG(status) != SIGQUIT) { /* possible request loss */
 				severity = ZLOG_WARNING;
 			}
-		} else if (WIFSTOPPED(status)) {
+		}
+#ifndef __KOS__
+		else if (WIFSTOPPED(status)) {
 
 			zlog(ZLOG_NOTICE, "child %d stopped for tracing", (int) pid);
 
@@ -239,6 +241,7 @@ void fpm_children_bury() /* {{{ */
 
 			continue;
 		}
+#endif
 
 		if (child) {
 			struct fpm_worker_pool_s *wp = child->wp;
@@ -409,7 +412,7 @@ int fpm_children_make(struct fpm_worker_pool_s *wp, int in_event_loop, int nb_to
 			zlog(ZLOG_WARNING, "child may miss signals");
 		}
 
-		pid = fork();
+		pid = 0;
 
 		switch (pid) {
 
