@@ -92,6 +92,10 @@ int __riscosify_control = __RISCOSIFY_STRICT_UNIX_SPECS;
 #include "fpm_log.h"
 #include "zlog.h"
 
+#ifdef __KOS__
+#include <kos_net.h>
+#endif
+
 /* XXX this will need to change later when threaded fastcgi is implemented.  shane */
 struct sigaction act, old_term, old_quit, old_int;
 
@@ -1506,6 +1510,23 @@ static zend_module_entry cgi_module_entry = {
 	STANDARD_MODULE_PROPERTIES
 };
 
+#ifdef __KOS__
+int kos_init_network() {
+    if (!configure_net_iface(DEFAULT_INTERFACE, DEFAULT_ADDR, DEFAULT_MASK, DEFAULT_GATEWAY, DEFAULT_MTU))
+    {
+        perror("Fail to setup network interface\n");
+        return -1;
+    }
+
+    if (!list_network_ifaces())
+    {
+        perror("Fail to list network interfaces\n");
+        return -1;
+    }
+	return 0;
+#endif
+}
+
 /* {{{ main */
 int main(int argc, char *argv[])
 {
@@ -1534,6 +1555,10 @@ int main(int argc, char *argv[])
 	int ret;
 #if ZEND_RC_DEBUG
 	zend_bool old_rc_debug;
+#endif
+
+#ifdef __KOS__
+	kos_init_network();
 #endif
 
 #if defined(SIGPIPE) && defined(SIG_IGN)
