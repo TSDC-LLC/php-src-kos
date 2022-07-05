@@ -71,7 +71,11 @@ static int zend_signal_register(int signo, void (*handler)(int, siginfo_t*, void
 
 static int zend_sigs[] = { TIMEOUT_SIG, SIGHUP, SIGINT, SIGQUIT, SIGTERM, SIGUSR1, SIGUSR2 };
 
-#define SA_FLAGS_MASK ~(SA_NODEFER | SA_RESETHAND)
+#ifdef __KOS__
+# define SA_FLAGS_MASK ~(0)
+#else
+# define SA_FLAGS_MASK ~(SA_NODEFER | SA_RESETHAND)
+#endif
 
 /* True globals, written only at process startup */
 static zend_signal_entry_t global_orig_handlers[NSIG];
@@ -209,10 +213,12 @@ static void zend_signal_handler(int signo, siginfo_t *siginfo, void *context)
 		}
 	} else if (p_sig.handler != SIG_IGN) {
 		if (p_sig.flags & SA_SIGINFO) {
+#ifndef __KOS__
 			if (p_sig.flags & SA_RESETHAND) {
 				SIGG(handlers)[signo-1].flags   = 0;
 				SIGG(handlers)[signo-1].handler = SIG_DFL;
 			}
+#endif
 			(*(void (*)(int, siginfo_t*, void*))p_sig.handler)(signo, siginfo, context);
 		} else {
 			(*(void (*)(int))p_sig.handler)(signo);

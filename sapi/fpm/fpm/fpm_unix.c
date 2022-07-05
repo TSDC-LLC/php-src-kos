@@ -263,7 +263,11 @@ int fpm_unix_free_socket_premissions(struct fpm_worker_pool_s *wp) /* {{{ */
 static int fpm_unix_conf_wp(struct fpm_worker_pool_s *wp) /* {{{ */
 {
 	struct passwd *pwd;
+#ifdef __KOS__
+	int is_root = 0;
+#else
 	int is_root = !geteuid();
+#endif
 
 	if (is_root) {
 		if (wp->config->user && *wp->config->user) {
@@ -376,6 +380,7 @@ int fpm_unix_init_child(struct fpm_worker_pool_s *wp) /* {{{ */
 		}
 	}
 
+#ifndef __KOS__
 	if (is_root) {
 
 		if (wp->config->process_priority != 64) {
@@ -402,6 +407,7 @@ int fpm_unix_init_child(struct fpm_worker_pool_s *wp) /* {{{ */
 			}
 		}
 	}
+#endif
 
 #ifdef HAVE_PRCTL
 	if (wp->config->process_dumpable && 0 > prctl(PR_SET_DUMPABLE, 1, 0, 0, 0)) {
@@ -479,7 +485,9 @@ int fpm_unix_init_main() /* {{{ */
 		}
 	}
 
+#ifndef __KOS__
 	fpm_pagesize = getpagesize();
+#endif
 	if (fpm_global_config.daemonize) {
 		/*
 		 * If daemonize, the calling process will die soon

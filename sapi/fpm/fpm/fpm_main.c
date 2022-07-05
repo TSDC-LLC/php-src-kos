@@ -81,6 +81,7 @@ int __riscosify_control = __RISCOSIFY_STRICT_UNIX_SPECS;
 #include "fastcgi.h"
 
 #include <php_config.h>
+#include <strings.h>
 #include "fpm.h"
 #include "fpm_main_arginfo.h"
 #include "fpm_request.h"
@@ -91,6 +92,13 @@ int __riscosify_control = __RISCOSIFY_STRICT_UNIX_SPECS;
 #include "fpm_php.h"
 #include "fpm_log.h"
 #include "zlog.h"
+
+#ifdef __KOS__
+#ifndef __arm__
+#include <sys/mount.h>
+#endif
+#include <kos_net.h>
+#endif
 
 /* XXX this will need to change later when threaded fastcgi is implemented.  shane */
 struct sigaction act, old_term, old_quit, old_int;
@@ -1537,6 +1545,31 @@ int main(int argc, char *argv[])
 	zend_bool old_rc_debug;
 #endif
 
+#ifdef __KOS__
+#ifdef __arm__
+	/* Инициализация сетевого интерфейса "en0". */
+	if (!configure_net_iface(DEFAULT_INTERFACE, DEFAULT_ADDR, DEFAULT_MASK, DEFAULT_GATEWAY, DEFAULT_MTU))
+	{
+	    perror("can not init network");
+	    return EXIT_FAILURE;
+	}
+#else
+	if (!wait_for_network()) {
+	    fprintf(stderr, "wait_for_network failed\n");
+	    return 1;
+	}
+	if (mkdir("/dev", S_IRWXU | S_IRWXG | S_IRWXO) != 0) {
+	    fprintf(stderr, "Failed to create \"/dev\" dir\n");
+	    return 1;
+	}
+	// mount /dev/urandom
+	if (mount("devfs", "/dev", "devfs", 0, "") != 0) {
+	    fprintf(stderr, "Failed to mount devfs /dev, devfs(error %d: \"%s\")\n", errno, strerror(errno));
+	    return 1;
+	}
+#endif
+#endif
+
 #if defined(SIGPIPE) && defined(SIG_IGN)
 	signal(SIGPIPE, SIG_IGN); /* ignore SIGPIPE in standalone mode so
 								that sockets created via fsockopen()
@@ -1798,6 +1831,11 @@ consult the installation file that came with this distribution, or visit \n\
 #if ZEND_RC_DEBUG
 	old_rc_debug = zend_rc_debug;
 	zend_rc_debug = 0;
+#endif
+
+#ifdef __KOS__
+    fpm_config = "/usr/local/var/conf/fpm/php-fpm.conf";
+    force_daemon = 0;
 #endif
 
 	ret = fpm_init(argc, argv, fpm_config ? fpm_config : CGIG(fpm_config), fpm_prefix, fpm_pid, test_conf, php_allow_to_run_as_root, force_daemon, force_stderr);

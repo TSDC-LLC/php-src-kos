@@ -322,6 +322,7 @@ int fpm_signals_child_block() /* {{{ */
 
 int fpm_signals_unblock() /* {{{ */
 {
+#ifndef __KOS__
 	/* Ensure that during reload after upgrade all signals are unblocked.
 		block_sigset could have different value before execve() */
 	sigset_t all_signals;
@@ -330,6 +331,7 @@ int fpm_signals_unblock() /* {{{ */
 		zlog(ZLOG_SYSERROR, "failed to unblock signals");
 		return -1;
 	}
+#endif
 	return 0;
 }
 /* }}} */

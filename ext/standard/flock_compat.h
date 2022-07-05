@@ -20,7 +20,9 @@
 #if HAVE_STRUCT_FLOCK
 #include <unistd.h>
 #include <fcntl.h>
-#include <sys/file.h>
+# ifndef __KOS__
+#  include <sys/file.h>
+# endif
 #endif
 
 #ifdef PHP_WIN32

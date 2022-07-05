@@ -47,6 +47,7 @@
 
 #include <signal.h>
 #include <locale.h>
+#include <strings.h>
 #include "zend.h"
 #include "zend_extensions.h"
 #include "php_ini.h"

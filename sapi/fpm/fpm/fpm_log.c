@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <strings.h>
 
 #ifdef HAVE_TIMES
 #include <sys/times.h>

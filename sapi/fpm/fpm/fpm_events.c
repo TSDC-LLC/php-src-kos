@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include <php.h>
+#include <strings.h>
 
 #include "fpm.h"
 #include "fpm_process_ctl.h"

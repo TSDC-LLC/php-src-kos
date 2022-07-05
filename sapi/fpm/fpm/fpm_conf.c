@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <strings.h>
 
 #include "php.h"
 #include "zend_ini_scanner.h"
@@ -813,11 +814,13 @@ static int fpm_conf_process_all_pools() /* {{{ */
 			}
 		}
 
+#ifndef __KOS__
 		/* alert if user is not set; only if we are root and fpm is not running with --allow-to-run-as-root */
 		if (!wp->config->user && !geteuid() && !fpm_globals.run_as_root) {
 			zlog(ZLOG_ALERT, "[pool %s] user has not been defined", wp->config->name);
 			return -1;
 		}
+#endif
 
 		/* listen */
 		if (wp->config->listen_address && *wp->config->listen_address) {

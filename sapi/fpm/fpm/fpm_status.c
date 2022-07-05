@@ -100,12 +100,14 @@ int fpm_status_export_to_zval(zval *status)
 			continue;
 		}
 		proc_p = &procs[i];
+#ifndef __KOS__
 		/* prevent NaN */
 		if (procs[i].cpu_duration.tv_sec == 0 && procs[i].cpu_duration.tv_usec == 0) {
 			cpu = 0.;
 		} else {
 			cpu = (procs[i].last_request_cpu.tms_utime + procs[i].last_request_cpu.tms_stime + procs[i].last_request_cpu.tms_cutime + procs[i].last_request_cpu.tms_cstime) / fpm_scoreboard_get_tick() / (procs[i].cpu_duration.tv_sec + procs[i].cpu_duration.tv_usec / 1000000.) * 100.;
 		}
+#endif
 
 		array_init(&fpm_proc_stat);
 		add_assoc_long(&fpm_proc_stat, "pid", procs[i].pid);
@@ -484,13 +486,14 @@ int fpm_status_handle_request(void) /* {{{ */
 						query_string = ZSTR_VAL(tmp_query_string);
 					}
 				}
-
+#ifndef __KOS__
 				/* prevent NaN */
 				if (proc->cpu_duration.tv_sec == 0 && proc->cpu_duration.tv_usec == 0) {
 					cpu = 0.;
 				} else {
 					cpu = (proc->last_request_cpu.tms_utime + proc->last_request_cpu.tms_stime + proc->last_request_cpu.tms_cutime + proc->last_request_cpu.tms_cstime) / fpm_scoreboard_get_tick() / (proc->cpu_duration.tv_sec + proc->cpu_duration.tv_usec / 1000000.) * 100.;
 				}
+#endif
 
 				if (proc->request_stage == FPM_REQUEST_ACCEPTING) {
 					duration = proc->duration;
